@@ -21,9 +21,24 @@
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <java.version>1.8</java.version>
         <prometheus.version>0.0.21</prometheus.version>
+		<tracingplane.version>4.0</tracingplane.version>
     </properties>
 
     <dependencies>
+		<dependency>
+			<groupId>org.aspectj</groupId>
+			<artifactId>aspectjrt</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>edu.brown.cs.systems</groupId>
+			<artifactId>xtrace-aspects</artifactId>
+			<version>${tracingplane.version}</version>
+		</dependency>
+		<dependency>
+			<groupId>edu.brown.cs.systems</groupId>
+			<artifactId>retro-aspects</artifactId>
+			<version>${tracingplane.version}</version>
+		</dependency>
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-data-rest</artifactId>
@@ -76,6 +91,39 @@
     <build>
         <finalName>shipping</finalName>
         <plugins>
+			<plugin>
+				<groupId>org.codehaus.mojo</groupId>
+				<artifactId>aspectj-maven-plugin</artifactId>
+				<version>1.8</version>
+				<configuration>
+					<aspectLibraries>
+						<aspectLibrary>
+							<groupId>edu.brown.cs.systems</groupId>
+							<artifactId>xtrace-aspects</artifactId>
+						</aspectLibrary>
+						<aspectLibrary>
+							<groupId>edu.brown.cs.systems</groupId>
+							<artifactId>retro-aspects</artifactId>
+						</aspectLibrary>
+					</aspectLibraries>
+				</configuration>
+				<executions>
+					<execution>
+						<goals>
+							<goal>compile</goal>
+						</goals>
+						<configuration>
+							<source>1.8</source>
+							<target>1.8</target>
+							<complianceLevel>1.8</complianceLevel>
+							<Xjoinpoints>synchronization</Xjoinpoints>
+							<showWeaveInfo>false</showWeaveInfo>
+							<verbose>false</verbose>
+							<Xlint>unmatchedSuperTypeInCall=ignore,adviceDidNotMatch=ignore,typeNotExposedToWeaver=ignore,uncheckedAdviceConversion=ignore,invalidAbsoluteTypeName=ignore</Xlint>
+						</configuration>
+					</execution>
+				</executions>
+			</plugin>
             <plugin>
                 <groupId>org.springframework.boot</groupId>
                 <artifactId>spring-boot-maven-plugin</artifactId>
